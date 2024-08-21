@@ -1610,7 +1610,7 @@ class ClassificationModel:
 
         if self.args.model_type == "layoutlm":
             inputs["bbox"] = batch[4]
-        elif len(batch) == 4:
+        elif len(batch) == 5:
             inputs["labels_agreement"] = batch[4]
 
         return inputs
