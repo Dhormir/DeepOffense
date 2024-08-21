@@ -100,8 +100,7 @@ class InputFeatures(object):
         self.input_mask = input_mask
         self.segment_ids = segment_ids
         self.label_id = label_id
-        if label_agreement:
-            self.label_agreement = label_agreement
+        self.label_agreement = label_agreement
         if bboxes:
             self.bboxes = bboxes
 
