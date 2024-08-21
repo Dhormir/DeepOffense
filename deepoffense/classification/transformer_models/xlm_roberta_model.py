@@ -3,7 +3,11 @@ from transformers.models.xlm_roberta.modeling_xlm_roberta import (
     XLM_ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST,
 )
 from typing import List, Optional, Tuple, Union
+from torch import nn
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
+import torch.nn.functional as F
 import torch
+
 from transformers.modeling_outputs import SequenceClassifierOutput
 
 from deepoffense.classification.transformer_models.roberta_model import RobertaForSequenceClassification

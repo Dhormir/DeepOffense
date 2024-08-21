@@ -390,7 +390,6 @@ class ClassificationModel:
             if self.args.lazy_loading:
                 raise ValueError("Input must be given as a path to a file when using lazy loading")
             if "text" in train_df.columns and "labels" in train_df.columns and "labels_agreement" in train_df.columns:
-                print("In Here I")
                 train_examples = [
                     InputExample(i, text, label=label, label_agreement=label_agreement)
                     for i, (text, label, label_agreement) in enumerate(zip(train_df["text"].astype(str),
