@@ -3,7 +3,7 @@ from transformers.models.xlm_roberta.modeling_xlm_roberta import (
     XLM_ROBERTA_PRETRAINED_MODEL_ARCHIVE_LIST,
 )
 from typing import List, Optional, Tuple, Union
-
+import torch
 
 from deepoffense.classification.transformer_models.roberta_model import RobertaForSequenceClassification
 
