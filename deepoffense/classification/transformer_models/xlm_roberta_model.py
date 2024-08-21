@@ -4,6 +4,7 @@ from transformers.models.xlm_roberta.modeling_xlm_roberta import (
 )
 from typing import List, Optional, Tuple, Union
 import torch
+from transformers.modeling_outputs import SequenceClassifierOutput
 
 from deepoffense.classification.transformer_models.roberta_model import RobertaForSequenceClassification
 
