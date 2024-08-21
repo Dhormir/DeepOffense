@@ -66,7 +66,7 @@ class InputExample(object):
     """A single training/test example for simple sequence classification."""
 
     def __init__(
-        self, guid, text_a, text_b=None, label=None, x0=None, y0=None, x1=None, y1=None
+        self, guid, text_a, text_b=None, label=None, label_agreement=None, x0=None, y0=None, x1=None, y1=None
     ):
         """
         Constructs a InputExample.
@@ -85,6 +85,7 @@ class InputExample(object):
         self.text_a = text_a
         self.text_b = text_b
         self.label = label
+        self.label_agreement = label_agreement
         if x0 is None:
             self.bboxes = None
         else:
@@ -94,11 +95,13 @@ class InputExample(object):
 class InputFeatures(object):
     """A single set of features of data."""
 
-    def __init__(self, input_ids, input_mask, segment_ids, label_id, bboxes=None):
+    def __init__(self, input_ids, input_mask, segment_ids, label_id, label_agreement=None, bboxes=None):
         self.input_ids = input_ids
         self.input_mask = input_mask
         self.segment_ids = segment_ids
         self.label_id = label_id
+        if label_agreement:
+            self.label_agreement = label_agreement
         if bboxes:
             self.bboxes = bboxes
 
@@ -478,6 +481,14 @@ def convert_example_to_feature(
             segment_ids=segment_ids,
             label_id=example.label,
             bboxes=bboxes,
+        )
+    elif example.label_agreement:
+        return InputFeatures(
+            input_ids=input_ids,
+            input_mask=input_mask,
+            segment_ids=segment_ids,
+            label_id=example.label,
+            label_agreement=example.label_agreement,
         )
     else:
         return InputFeatures(

@@ -111,9 +111,21 @@ class ClassificationModel:
         """  # noqa: ignore flake8"
 
         MODEL_CLASSES = {
-            "albert": (AlbertConfig, AlbertForSequenceClassification, AlbertTokenizer),
-            "auto": (AutoConfig, AutoModelForSequenceClassification, AutoTokenizer),
-            "bert": (BertConfig, BertForSequenceClassification, BertTokenizerFast),
+            "albert": (
+                AlbertConfig,
+                AlbertForSequenceClassification,
+                AlbertTokenizer
+            ),
+            "auto": (
+                AutoConfig,
+                AutoModelForSequenceClassification,
+                AutoTokenizer
+            ),
+            "bert": (
+                BertConfig,
+                BertForSequenceClassification,
+                BertTokenizerFast
+            ),
             "bertweet": (
                 RobertaConfig,
                 RobertaForSequenceClassification,
@@ -157,9 +169,11 @@ class ClassificationModel:
                 RobertaForSequenceClassification,
                 RobertaTokenizerFast,
             ),
-
-
-            "xlm": (XLMConfig, XLMForSequenceClassification, XLMTokenizer),
+            "xlm": (
+                XLMConfig,
+                XLMForSequenceClassification,
+                XLMTokenizer
+            ),
             "xlmroberta": (
                 XLMRobertaConfig,
                 XLMRobertaForSequenceClassification,
@@ -375,7 +389,14 @@ class ClassificationModel:
         else:
             if self.args.lazy_loading:
                 raise ValueError("Input must be given as a path to a file when using lazy loading")
-            if "text" in train_df.columns and "labels" in train_df.columns:
+            if "text" in train_df.columns and "labels" in train_df.columns and "labels_agreement" in train_df.columns:
+                train_examples = [
+                    InputExample(i, text, label=label, label_agreement=label_agreement)
+                    for i, (text, label, label_agreement) in enumerate(zip(train_df["text"].astype(str),
+                                                                           train_df["labels"],
+                                                                           train_df["labels_agreement"]))
+                    ]
+            elif "text" in train_df.columns and "labels" in train_df.columns:
                 if self.args.model_type == "layoutlm":
                     train_examples = [
                         InputExample(i, text, None, label, x0, y0, x1, y1)
@@ -1248,6 +1269,10 @@ class ClassificationModel:
 
         if self.args.model_type == "layoutlm":
             dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, all_bboxes)
+        elif all([f.label_agreement for f in features]):
+            print("Its working?")
+            all_label_agreements = torch.tensor([f.label_agreement  for f in features], dtype=torch.float)
+            dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids, all_label_agreements)
         else:
             dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
 
@@ -1585,6 +1610,8 @@ class ClassificationModel:
 
         if self.args.model_type == "layoutlm":
             inputs["bbox"] = batch[4]
+        elif len(batch) == 4:
+            inputs["labels_agreement"] = batch[4]
 
         return inputs
 
